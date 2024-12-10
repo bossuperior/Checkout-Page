@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto&display=swap');
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+body{
+    background: #F9F7F7;
+}
+.container{
+    display: flex;
+    flex-wrap: wrap;
+}
+.form{
+    margin:1rem 3rem;
+    width: 50vh;
+    flex:1;
+}
+.form>*{
+    margin: 0.5rem;
+}
+input{
+    border-radius: 5px;
+}
+select{
+    border-radius: 5px;
+}
+h1{
+    margin: 1rem 2rem;
+    font-size: 2rem;
+    color: darkblue;
+    font-family: "Roboto", serif;
+    font-weight: 600;
+    font-style: normal;
+}
+h2{
+    font-size: 1rem;
+}
+.heading{
+    display: flex;
+    border-bottom: 1px solid #DBE2EF;
+}
+.cart>*{
+    margin: 0;
+}
+.btn{
+    background-color: darkblue;
+}
+.reviewCart{
+    height: 30vh;
+}
+.summary>*{
+    margin: 0.25rem;
+}
+.payMethod{
+    height: 33.25vh;
+    width: 100%;
+}
+.tab-content{
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+.image-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.image-container img{
+    width: 47%;
+}
+.cartlist-items{
+    display: flex;
+    flex-direction: column;
+}
+.cartlist-items>*{
+    display: inline-flex;
+    margin: 0.25rem 0;
+}
+.cartlist-detail{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 1rem;
+}
+.cartlist-detail>*{
+    margin: 0;
+}
+.creditForm{
+    margin-top: 1rem;
+    width:100%;
+}
+.creditForm>*{
+    margin-top: 0.5rem;
+}

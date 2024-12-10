@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Checkout Page</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet">
+    <link href="checkout.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="heading">
+    <h1>Checkout</h1>
+</div>
+<div class="container">
+    <div class="form">
+        <h2>Shipping Information</h2>
+        <label for="fullname">Full name</label>
+        <input class="form-control" id="fullname" placeholder="Enter full name" type="text">
+        <label for="email">Email address</label>
+        <div class="input-group mb-3" id = "email">
+            <input type="text" class="form-control" placeholder="Username" aria-label="Username">
+            <span class="input-group-text">@</span>
+            <input type="text" class="form-control" placeholder="Domain" aria-label="Server">
+        </div>
+        <label for="country">Country</label>
+        <select class="form-select" id="country">
+            <option selected>Choose Country</option>
+        </select>
+        <label for="tel">Phone number</label>
+        <input class="form-control" id="tel" placeholder="Enter phone number" type="tel">
+        <label for="street">Street address</label>
+        <input class="form-control" id="street" placeholder="Enter street address" type="text">
+        <label for="city">City</label>
+        <input class="form-control" id="city" placeholder="Enter city" type="text">
+        <label for="state">State/Provine/Region</label>
+        <input class="form-control" id="state" placeholder="Enter state province or region" type="text">
+        <label for="zip">ZIP Code</label>
+        <input class="form-control" id="zip" placeholder="Enter ZIP Code" type="text">
+    </div>
+    <div class="form">
+        <h2>Review your cart</h2>
+        <section class="reviewCart" id="cartList"></section>
+        <script>
+            $(document).ready(function () {
+                // ดึงข้อมูลตะกร้าสินค้าจาก Local Storage
+                const cart = JSON.parse(localStorage.getItem('cart')) || []; //ถ้าไม่มีข้อมูลใน storage จะใช้เป็น array ว่าง [] แทน
+
+                // ฟังก์ชันแปลงตัวเลขให้มีเครื่องหมายคอมมา
+                function numberWithCommas(x) {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    //(/\B(?=(\d{3})+(?!\d))/g, ",") = RegEx ,g =Global flag ใช้ค้นหาทุกตำแหน่งใน String
+                    //(\d{3})+ = จับกลุ่มตัวเลข 3 ตัวและสามารถซ้ำกันได้หลายครั้ง
+                    //(?..) lookahead pattern คือการมองล่วงหน้าว่าอักขระที่ตามมาคือะไรโดย RegEx จะวิ่งไปตรวจสอบอักษรตัวหลังอีก 1 ตัวว่าเข้าเงื่อนไขหรือไม่
+                    //(?!\d) ตรวจสอบว่าตัวเลขกลุ่มสุดท้ายต้องมีสามหลัก คือต้องเป็น 2,134 ห้ามเป็น 621,34
+                }
+                // ฟังก์ชันแสดงรายการสินค้าในตะกร้า
+                function renderCart() {
+                    if (cart.length > 0) {
+                        let html = '';
+                        let subtotal = 0;
+                        for (let i = 0; i < cart.length; i++) { //ถ้าตะกร้ามีสินค้า จะสร้าง HTML String แสดงข้อมูลสินค้าแต่ละชิ้น
+                            const itemTotal = cart[i].price * cart[i].count; // คำนวณราคาสินค้าแต่ละชิ้น
+                            subtotal += itemTotal; // รวมราคาสินค้าแต่ละชิ้นเข้าไปใน subtotal
+                            html += `<div class="cartlist-items">
+                                    <div class="cartlist-left">
+                                        <img src="${cart[i].img}" alt="${cart[i].name}" style="width: 80px; height: 80px;">
+                                        <div class="cartlist-detail">
+                                            <p><strong>${cart[i].name}</strong></p>
+                                            <p>${numberWithCommas(cart[i].price * cart[i].count)} THB</p>
+                                            <p>Quantity: ${cart[i].count}</p>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        }
+                        $("#cartList").html(html); //ช้ jQuery เพื่อใส่ข้อมูล HTML ที่สร้างขึ้นลงใน cartList id
+                        $("#subtotal").text(`${numberWithCommas(subtotal)} THB`); // แสดงผลรวมราคาสินค้าใน Subtotal
+                    } else {
+                        $("#cartList").html("<p>Your cart is empty.</p>");
+                        $("#subtotal").text("0 THB"); // ถ้าตะกร้าว่าง ให้ Subtotal เป็น 0
+                    }
+                }
+
+                // เรียกฟังก์ชันแสดงตะกร้าสินค้า
+                renderCart();
+            });
+        </script>
+        <section class="summary">
+            <p>Subtotal&ensp;<strong><span id="subtotal">0 THB</span></strong></p>
+            <p>Shipping</p>
+            <p>Discount</p>
+            <strong class=total>Total</strong>
+        </section>
+        <section class="payMethod">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button aria-controls="home-tab-pane" aria-selected="true" class="nav-link active" data-bs-target="#home-tab-pane"
+                            data-bs-toggle="tab" id="home-tab" role="tab" type="button">TrueMoney Wallet
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button aria-controls="profile-tab-pane" aria-selected="false" class="nav-link" data-bs-target="#profile-tab-pane"
+                            data-bs-toggle="tab" id="profile-tab" role="tab" type="button">QR Payment
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button aria-controls="contact-tab-pane" aria-selected="false" class="nav-link" data-bs-target="#contact-tab-pane"
+                            data-bs-toggle="tab" id="contact-tab" role="tab" type="button">Credit or
+                        Debit Card
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div aria-labelledby="home-tab" class="tab-pane fade show active" id="home-tab-pane" role="tabpanel"
+                     tabindex="0">
+                    <div class="image-container">
+                        <img alt="true qrcode" src="QR-Images/true.jpg">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" id="inputGroupFile02 true">
+                        <label class="input-group-text" for="inputGroupFile02">Upload Proof</label>
+                    </div>
+                </div>
+                <div aria-labelledby="profile-tab" class="tab-pane fade" id="profile-tab-pane" role="tabpanel"
+                     tabindex="0">
+                    <div class="image-container">
+                        <img alt="promptpay qrcode" src="QR-Images/promptpay.jpg">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" id="inputGroupFile02 pp">
+                        <label class="input-group-text" for="inputGroupFile02">Upload Proof</label>
+                    </div>
+                </div>
+                <div aria-labelledby="contact-tab" class="tab-pane fade" id="contact-tab-pane" role="tabpanel"
+                     tabindex="0">
+                    <div class="creditForm">
+                        <div class="input-group input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-sm card">Card Number</span>
+                            <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-sm exp">Expiration</span>
+                            <input type="Date" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            <span class="input-group-text" id="inputGroup-sizing-sm csc">Card Security Code</span>
+                            <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="inputGroupFile02">
+                            <label class="input-group-text" for="inputGroupFile02">Upload Proof</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                            <label class="form-check-label" for="inlineRadio1">Visa</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                            <label class="form-check-label" for="inlineRadio2">Mastercard</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                            <label class="form-check-label" for="inlineRadio3">Amex</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option4">
+                            <label class="form-check-label" for="inlineRadio4">UnionPay</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="submit">Place order</button>
+            </div>
+        </section>
+    </div>
+</div>
+<script crossorigin="anonymous"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="checkout.js"></script>
+</body>
+</html>
